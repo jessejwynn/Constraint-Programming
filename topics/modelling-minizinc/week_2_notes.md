@@ -60,6 +60,14 @@ Given a list of coin denominations and a sum, give a list of coins that make up 
 - Example: you have coins in the denominations: [1, 5, 10, 20] and must make up the sum 75.
     - One possible solution: 75 pennies - probably not prefered!
     - Another probably better solution: 3x20, 1x10, 1x5
+ 
+**Coin Changer** (lecture)
+setup: 
+- what coins, how many denomination
+- total
+- coin supply
+Variable: number of each denomination[coin]
+Constraints: sum of count * denom = total
 
 I have a canned solution prepped, but have a go at discussing or coding up, using the stub:
 ```
@@ -105,6 +113,35 @@ Are all problems hard?
 
 To MiniZinc!
 
+**Production** (lecture)
+
+(dzn file)
+PRODUCT = {DINGHY, DOREY, SCHOONER, TRAWLER, NARROWBOAT};
+value = [70, 90, 150,1 70, 110];
+RESOURCE = {IRON, WOOD, SMITH, CARPENTER};
+supply = [5000, 7500, 4000, 3000]
+
+Setup: spectification of items
+var: 
+- array of how many of each thing we make
+- income
+constraint:
+- for each resource, sum of prduct resource use is less than supply
+- max(sum of value * num of product)
+
+(mzn file)
+enum PRODUCT;
+array[PRODUCT] of int: value;
+enum RESOURCE;
+array[RESOURCE] of int: supply;
+array[PRODUCT, RESOURCE] of int: demand;
+
+array[PRODUCT] of var int: num_made;
+var int: total = sum(p in PRODUCT)(value[p] * num_made[p]);
+
+contraint forall(r in RESOURCE)(sum (p in PRODUCT)(demand[p,r]*num_made[p]) <= supply[r]);
+
+solve maximize total_value;
 ----
 ## Crystal maze puzzle 
 
